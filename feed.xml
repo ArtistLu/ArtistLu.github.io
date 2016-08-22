@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Your-GitBlog</title>
-        <description>GitBlog是一个简单易用的Markdown博客系统</description>
-        <link>/</link>
-        <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2016-08-22 08:08:42</pubDate>
-        <lastBuildDate>2016-08-22 08:08:42</lastBuildDate>
+        <title>ArtistLu Blog</title>
+        <description>大道至简</description>
+        <link>http://artistlu.top</link>
+        <atom:link href="http://artistlu.top/feed.xml" rel="self" type="application/rss+xml" />
+        <pubDate>2016-08-22 09:08:24</pubDate>
+        <lastBuildDate>2016-08-22 09:08:24</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>欢迎使用GitBlog</title>
@@ -82,8 +82,8 @@ summary: GitBlog是一个简单易用的Markdown博客系统，它不需要数�
 &lt;p&gt;QQ群：&lt;code&gt;84692078&lt;/code&gt;&lt;br /&gt;
 作者邮箱：&lt;code&gt;164068300[AT]qq.com&lt;/code&gt;    &lt;/p&gt;            </description>
             <pubDate>2016-08-22 08:29:57</pubDate>
-            <link>//blog/welcome.html</link>
-            <guid isPermaLink="true">//blog/welcome.html</guid>
+            <link>http://artistlu.top/blog/welcome.html</link>
+            <guid isPermaLink="true">http://artistlu.top/blog/welcome.html</guid>
                                                <category>GitBlog</category>
                                     </item>
             </channel>
