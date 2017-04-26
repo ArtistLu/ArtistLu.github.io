@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Your-GitBlog</title>
-        <description>GitBlog是一个简单易用的Markdown博客系统</description>
+        <title>ArtistLu Blog</title>
+        <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-26 03:04:06</pubDate>
-        <lastBuildDate>2017-04-26 03:04:06</lastBuildDate>
+        <pubDate>2017-04-26 04:04:22</pubDate>
+        <lastBuildDate>2017-04-26 04:04:22</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
             <description>
             &lt;!--
 author: zhanglu
-head: http://pingodata.qiniudn.com/jockchou-avatar.jpg
+head: /blog/img/mysql001.png
 date: 2017-04-26
 title: mysql开发技巧
 tags: mysql
-images: http://pingodata.qiniudn.com/cube2.jpg
+images: /blog/img/mysql001.png
 category: GitBlog
 status: publish
 summary:在开发过程中，经常会遇到mysql处理一些数据，在此介绍一些关于其技巧。
 --&gt;
 &lt;h2&gt;一. mysql开发技巧&lt;/h2&gt;            </description>
-            <pubDate>2017-04-26 03:23:42</pubDate>
+            <pubDate>2017-04-26 04:35:32</pubDate>
             <link>//blog/mysql001.html</link>
             <guid isPermaLink="true">//blog/mysql001.html</guid>
                                                <category>GitBlog</category>
