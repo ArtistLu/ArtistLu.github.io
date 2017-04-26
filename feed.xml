@@ -4,8 +4,8 @@
         <description>GitBlog是一个简单易用的Markdown博客系统</description>
         <link>http://artistlu.top/</link>
         <atom:link href="http://artistlu.top//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-26 02:04:00</pubDate>
-        <lastBuildDate>2017-04-26 02:04:00</lastBuildDate>
+        <pubDate>2017-04-26 02:04:15</pubDate>
+        <lastBuildDate>2017-04-26 02:04:15</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
