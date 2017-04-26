@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>ArtistLu-Blog</title>
+        <title>Your-GitBlog</title>
         <description>GitBlog是一个简单易用的Markdown博客系统</description>
-        <link>http://artistlu.top/</link>
-        <atom:link href="http://artistlu.top//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-26 02:04:15</pubDate>
-        <lastBuildDate>2017-04-26 02:04:15</lastBuildDate>
+        <link>/</link>
+        <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
+        <pubDate>2017-04-26 03:04:06</pubDate>
+        <lastBuildDate>2017-04-26 03:04:06</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
             <description>
             &lt;!--
-author:ArtistLu
-head: 
-date: 2017-04-25
+author: zhanglu
+head: http://pingodata.qiniudn.com/jockchou-avatar.jpg
+date: 2017-04-26
 title: mysql开发技巧
-tags: mysql skills
-images:/blog/img/mysql001.jpg
-category: mysql
+tags: mysql
+images: http://pingodata.qiniudn.com/cube2.jpg
+category: GitBlog
 status: publish
-summary: mysql一些开发技巧。
+summary:在开发过程中，经常会遇到mysql处理一些数据，在此介绍一些关于其技巧。
 --&gt;
-&lt;h2&gt;一. mysql开发技巧&lt;/h2&gt;
-&lt;p&gt;学习imooc视频教程笔记&lt;/p&gt;            </description>
-            <pubDate>2017-04-26 01:04:02</pubDate>
-            <link>http://artistlu.top//blog/posts/mysql001.html</link>
-            <guid isPermaLink="true">http://artistlu.top//blog/posts/mysql001.html</guid>
-                                               <category>mysql</category>
+&lt;h2&gt;一. mysql开发技巧&lt;/h2&gt;            </description>
+            <pubDate>2017-04-26 03:23:42</pubDate>
+            <link>//blog/mysql001.html</link>
+            <guid isPermaLink="true">//blog/mysql001.html</guid>
+                                               <category>GitBlog</category>
                                     </item>
                 <item>
             <title>欢迎使用GitBlog</title>
@@ -103,9 +102,9 @@ summary: GitBlog是一个简单易用的Markdown博客系统，它不需要数�
 &lt;p&gt;GitBlog的成长需要喜欢Markdown，喜欢写博客的各位亲们支持！感谢你们使用GitBlog，感激你们对Gitblog的良好建议与Bug反馈。&lt;/p&gt;
 &lt;p&gt;QQ群：&lt;code&gt;84692078&lt;/code&gt;&lt;br /&gt;
 作者邮箱：&lt;code&gt;164068300[AT]qq.com&lt;/code&gt;    &lt;/p&gt;            </description>
-            <pubDate>2017-04-25 10:36:31</pubDate>
-            <link>http://artistlu.top//blog/posts/welcome.html</link>
-            <guid isPermaLink="true">http://artistlu.top//blog/posts/welcome.html</guid>
+            <pubDate>2017-04-25 09:53:53</pubDate>
+            <link>//blog/welcome.html</link>
+            <guid isPermaLink="true">//blog/welcome.html</guid>
                                                <category>GitBlog</category>
                                     </item>
             </channel>
