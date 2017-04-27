@@ -4,8 +4,8 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-26 04:04:08</pubDate>
-        <lastBuildDate>2017-04-26 04:04:08</lastBuildDate>
+        <pubDate>2017-04-27 03:04:35</pubDate>
+        <lastBuildDate>2017-04-27 03:04:35</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
@@ -21,8 +21,220 @@ category: GitBlog
 status: publish
 summary:在开发过程中，经常会遇到mysql处理一些数据，在此介绍一些关于其技巧。
 --&gt;
-&lt;h2&gt;一. mysql开发技巧&lt;/h2&gt;            </description>
-            <pubDate>2017-04-26 04:35:32</pubDate>
+&lt;h1&gt;mysql开发技巧&lt;/h1&gt;
+&lt;p&gt;通过&lt;code&gt;imooc&lt;/code&gt;视频学习笔记整理如下：&lt;/p&gt;
+&lt;h2&gt;&lt;a name='top'&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#skill-one&quot;&gt;&lt;strong&gt;技巧一&lt;/strong&gt; &lt;mark&gt;取每个用户最大记录&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#skill-two&quot;&gt;&lt;strong&gt;技巧二&lt;/strong&gt; &lt;mark&gt;取每个用户前n条记录&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&lt;a name='skill-one'&gt;&lt;/a&gt;技巧一 &lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;要求：&lt;/strong&gt;有用户表&lt;code&gt;users&lt;/code&gt;和用户打怪表 &lt;code&gt;user_kill&lt;/code&gt;如下， 查出所有用户对于某天打怪最多记录数.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;table：users
++----+-----------+
+| id | name      |
++----+-----------+
+|  1 | 唐僧       |
+|  2 | 孙悟空     |
+|  3 | 猪八戒     |
+|  4 | 沙僧       |
++----+-----------+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;table：user_kill
++---------+---------------------+-------+
+| user_id | created_at          | kills |
++---------+---------------------+-------+
+|       1 | 2017-04-21 00:00:00 |     3 |
+|       2 | 2017-04-21 00:00:00 |     9 |
+|       3 | 2017-04-21 00:00:00 |     2 |
+|       4 | 2017-04-21 00:00:00 |     1 |
+|       1 | 2017-04-22 00:00:00 |     5 |
+|       2 | 2017-04-22 00:00:00 |     7 |
+|       3 | 2017-04-22 00:00:00 |     6 |
+|       4 | 2017-04-22 00:00:00 |     9 |
+|       1 | 2017-04-23 00:00:00 |     3 |
+|       2 | 2017-04-23 00:00:00 |     1 |
+|       3 | 2017-04-23 00:00:00 |     3 |
+|       4 | 2017-04-23 00:00:00 |     7 |
+|       1 | 2017-04-24 00:00:00 |     9 |
+|       2 | 2017-04-24 00:00:00 |     3 |
+|       3 | 2017-04-24 00:00:00 |     6 |
+|       4 | 2017-04-24 00:00:00 |     2 |
++---------+---------------------+-------+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;方法一&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;step1&lt;/strong&gt;连接两表&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT a.name, created_at, kills
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------------------+-------+
+| name      | created_at          | kills |
++-----------+---------------------+-------+
+| 唐僧      | 2017-04-21 00:00:00 |     3 |
+| 孙悟空    | 2017-04-21 00:00:00 |     9 |
+| 猪八戒    | 2017-04-21 00:00:00 |     2 |
+| 沙僧      | 2017-04-21 00:00:00 |     1 |
+| 唐僧      | 2017-04-22 00:00:00 |     5 |
+| 孙悟空    | 2017-04-22 00:00:00 |     7 |
+| 猪八戒    | 2017-04-22 00:00:00 |     6 |
+| 沙僧      | 2017-04-22 00:00:00 |     9 |
+| 唐僧      | 2017-04-23 00:00:00 |     3 |
+| 孙悟空    | 2017-04-23 00:00:00 |     1 |
+| 猪八戒    | 2017-04-23 00:00:00 |     3 |
+| 沙僧      | 2017-04-23 00:00:00 |     7 |
+| 唐僧      | 2017-04-24 00:00:00 |     9 |
+| 孙悟空    | 2017-04-24 00:00:00 |     3 |
+| 猪八戒    | 2017-04-24 00:00:00 |     6 |
+| 沙僧      | 2017-04-24 00:00:00 |     2 |
++-----------+---------------------+-------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;step2&lt;/em&gt;&lt;/strong&gt; 再次链接user_kill &lt;code&gt;group by&lt;/code&gt; &lt;code&gt;max()&lt;/code&gt; &lt;code&gt;hving&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, b.created_at, b.kills, MAX(c.kills) AS max_kills
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id
+    JOIN user_kill c ON b.user_id = c.user_id
+GROUP BY name, b.created_at, b.kills
+HAVING b.kills = max_kills&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------------------+-------+-----------+
+| name      | created_at          | kills | max_kills |
++-----------+---------------------+-------+-----------+
+| 唐僧      | 2017-04-24 00:00:00 |     9 |         9 |
+| 孙悟空    | 2017-04-21 00:00:00 |     9 |         9 |
+| 沙僧      | 2017-04-22 00:00:00 |     9 |         9 |
+| 猪八戒    | 2017-04-22 00:00:00 |     6 |         6 |
+| 猪八戒    | 2017-04-24 00:00:00 |     6 |         6 |
++-----------+---------------------+-------+-----------+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;/mark&gt;：&lt;/strong&gt;为了便于理解结果有很多多余字段，在工作当中可以省略掉不必要的字段和数据&lt;/p&gt;
+&lt;h3&gt;方法二&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;step1&lt;/strong&gt; 先查出某人的最高打怪记录数&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT user_id, MAX(kills) AS max_kills
+FROM user_kill
+GROUP BY user_id&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+---------+-----------+
+| user_id | max_kills |
++---------+-----------+
+|       1 |         9 |
+|       2 |         9 |
+|       3 |         6 |
+|       4 |         9 |
++---------+-----------+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;step2&lt;/strong&gt; 查出打怪记录&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, user_id, created_at, kills
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------+---------------------+-------+
+| name      | user_id | created_at          | kills |
++-----------+---------+---------------------+-------+
+| 唐僧      |       1 | 2017-04-21 00:00:00 |     3 |
+| 孙悟空    |       2 | 2017-04-21 00:00:00 |     9 |
+| 猪八戒    |       3 | 2017-04-21 00:00:00 |     2 |
+| 沙僧      |       4 | 2017-04-21 00:00:00 |     1 |
+| 唐僧      |       1 | 2017-04-22 00:00:00 |     5 |
+| 孙悟空    |       2 | 2017-04-22 00:00:00 |     7 |
+| 猪八戒    |       3 | 2017-04-22 00:00:00 |     6 |
+| 沙僧      |       4 | 2017-04-22 00:00:00 |     9 |
+| 唐僧      |       1 | 2017-04-23 00:00:00 |     3 |
+| 孙悟空    |       2 | 2017-04-23 00:00:00 |     1 |
+| 猪八戒    |       3 | 2017-04-23 00:00:00 |     3 |
+| 沙僧      |       4 | 2017-04-23 00:00:00 |     7 |
+| 唐僧      |       1 | 2017-04-24 00:00:00 |     9 |
+| 孙悟空    |       2 | 2017-04-24 00:00:00 |     3 |
+| 猪八戒    |       3 | 2017-04-24 00:00:00 |     6 |
+| 沙僧      |       4 | 2017-04-24 00:00:00 |     2 |
++-----------+---------+---------------------+-------+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;step3&lt;/strong&gt; &lt;code&gt;in()&lt;/code&gt;多字段过滤&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, user_id, created_at, kills
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id
+WHERE (user_id, kills) IN (SELECT user_id, MAX(kills) AS max_kills
+    FROM user_kill
+    GROUP BY user_id)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------+---------------------+-------+
+| name      | user_id | created_at          | kills |
++-----------+---------+---------------------+-------+
+| 孙悟空    |       2 | 2017-04-21 00:00:00 |     9 |
+| 猪八戒    |       3 | 2017-04-22 00:00:00 |     6 |
+| 沙僧      |       4 | 2017-04-22 00:00:00 |     9 |
+| 唐僧      |       1 | 2017-04-24 00:00:00 |     9 |
+| 猪八戒    |       3 | 2017-04-24 00:00:00 |     6 |
++-----------+---------+---------------------+-------+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;方法三&lt;/h3&gt;
+&lt;p&gt;连表查询，较方法二高效，方法二更易于理解.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, b.user_id, created_at, b.kills, c.max_kills
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id
+    JOIN (SELECT user_id, MAX(kills) AS max_kills
+        FROM user_kill
+        GROUP BY user_id
+        ) c ON b.user_id = c.user_id
+WHERE b.kills = c.max_kills&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------+---------------------+-------+-----------+
+| name      | user_id | created_at          | kills | max_kills |
++-----------+---------+---------------------+-------+-----------+
+| 孙悟空    |       2 | 2017-04-21 00:00:00 |     9 |         9 |
+| 猪八戒    |       3 | 2017-04-22 00:00:00 |     6 |         6 |
+| 沙僧      |       4 | 2017-04-22 00:00:00 |     9 |         9 |
+| 唐僧      |       1 | 2017-04-24 00:00:00 |     9 |         9 |
+| 猪八戒    |       3 | 2017-04-24 00:00:00 |     6 |         6 |
++-----------+---------+---------------------+-------+-----------+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;&lt;a name='skill-two'&gt;&lt;/a&gt;技巧二 &lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;要求&lt;/strong&gt; 查询每个用户打怪数排前&lt;strong&gt;n&lt;/strong&gt;名记录&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;step1&lt;/strong&gt; &lt;code&gt;users&lt;/code&gt; 两次连表 &lt;code&gt;user_kill&lt;/code&gt; 第二次用 &lt;code&gt;cross join&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, b.created_at, b.kills, c.kills
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id
+    CROSS JOIN user_kill c ON b.user_id = c.user_id
+        AND b.kills &amp;lt; c.kills&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------------------+-------+-------+
+| name      | created_at          | kills | kills |
++-----------+---------------------+-------+-------+
+| 孙悟空    | 2017-04-22 00:00:00 |     7 |     9 |
+| 孙悟空    | 2017-04-23 00:00:00 |     1 |     9 |
+| 孙悟空    | 2017-04-24 00:00:00 |     3 |     9 |
+| 唐僧      | 2017-04-21 00:00:00 |     3 |     5 |
+| 唐僧      | 2017-04-23 00:00:00 |     3 |     5 |
+| 孙悟空    | 2017-04-23 00:00:00 |     1 |     7 |
+| 孙悟空    | 2017-04-24 00:00:00 |     3 |     7 |
+| 猪八戒    | 2017-04-21 00:00:00 |     2 |     6 |
+| 猪八戒    | 2017-04-23 00:00:00 |     3 |     6 |
+| 沙僧      | 2017-04-21 00:00:00 |     1 |     9 |
+| 沙僧      | 2017-04-23 00:00:00 |     7 |     9 |
+| 沙僧      | 2017-04-24 00:00:00 |     2 |     9 |
+| 猪八戒    | 2017-04-21 00:00:00 |     2 |     3 |
+| 沙僧      | 2017-04-21 00:00:00 |     1 |     7 |
+| 沙僧      | 2017-04-24 00:00:00 |     2 |     7 |
+| 唐僧      | 2017-04-21 00:00:00 |     3 |     9 |
+| 唐僧      | 2017-04-22 00:00:00 |     5 |     9 |
+| 唐僧      | 2017-04-23 00:00:00 |     3 |     9 |
+| 孙悟空    | 2017-04-23 00:00:00 |     1 |     3 |
+| 猪八戒    | 2017-04-21 00:00:00 |     2 |     6 |
+| 猪八戒    | 2017-04-23 00:00:00 |     3 |     6 |
+| 沙僧      | 2017-04-21 00:00:00 |     1 |     2 |
++-----------+---------------------+-------+-------+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;step2&lt;/strong&gt; 通过 &lt;code&gt;group by name,b.created_at,b.kills&lt;/code&gt; 比较两次 &lt;code&gt;user_kill&lt;/code&gt;表得出每个人打怪排名.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, b.created_at, b.kills, (
+        SELECT COUNT(*) + 1
+        FROM user_kill c
+        WHERE c.user_id = b.user_id
+            AND c.kills &amp;gt; b.kills
+        ) AS rank
+FROM users a
+    JOIN user_kill b ON a.id = b.user_id
+
+HAVING rank &amp;lt;= 2
+ORDER BY name&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+---------------------+-------+------+
+| name      | created_at          | kills | rank |
++-----------+---------------------+-------+------+
+| 唐僧      | 2017-04-22 00:00:00 |     5 |    2 |
+| 唐僧      | 2017-04-24 00:00:00 |     9 |    1 |
+| 孙悟空    | 2017-04-21 00:00:00 |     9 |    1 |
+| 孙悟空    | 2017-04-22 00:00:00 |     7 |    2 |
+| 沙僧      | 2017-04-22 00:00:00 |     9 |    1 |
+| 沙僧      | 2017-04-23 00:00:00 |     7 |    2 |
+| 猪八戒    | 2017-04-24 00:00:00 |     6 |    1 |
+| 猪八戒    | 2017-04-22 00:00:00 |     6 |    1 |
++-----------+---------------------+-------+------+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;mark&gt;&lt;/strong&gt; 如果打怪数有重复，此查询有一定缺陷.&lt;/p&gt;            </description>
+            <pubDate>2017-04-27 03:24:13</pubDate>
             <link>//blog/mysql001.html</link>
             <guid isPermaLink="true">//blog/mysql001.html</guid>
                                                <category>GitBlog</category>
