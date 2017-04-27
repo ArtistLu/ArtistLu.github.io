@@ -39,6 +39,8 @@ summary:在开发过程中，经常会遇到mysql处理一些数据，在此介�
 <ul>
 <li><a href="#skill-one"><strong>技巧一</strong> <mark>取每个用户最大记录</mark></a></li>
 <li><a href="#skill-two"><strong>技巧二</strong> <mark>取每个用户前n条记录</mark></a></li>
+<li><a href="#skill-three"><strong>技巧三</strong> <mark>行列转换</mark></a></li>
+<li><a href="#skill-four"><strong>技巧四</strong> <mark>生成唯一序列号</mark></a></li>
 </ul>
 <h2><a name='skill-one'></a>技巧一 <a href="#top"><em>top</em></a></h2>
 <p><strong>要求：</strong>有用户表<code>users</code>和用户打怪表 <code>user_kill</code>如下， 查出所有用户对于某天打怪最多记录数.</p>
@@ -246,6 +248,138 @@ ORDER BY name</code></pre>
 | 猪八戒    | 2017-04-22 00:00:00 |     6 |    1 |
 +-----------+---------------------+-------+------+</code></pre>
 <p><strong><mark>注意<mark></strong> 如果打怪数有重复，此查询有一定缺陷.</p>
+<h2><a name='skill-three'></a>技巧三 <a href="#top"><em>top</em></a></h2>
+<h4><strong>列转行一</strong></h4>
+<p>有如下表，<code>phones</code>字段以逗号转为多行.</p>
+<pre><code>+-----------+-------------------------------------+
+| name      | phones                              |
++-----------+-------------------------------------+
+| 唐僧      | 13611154325,13322876547,17654356788 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |
+| 沙僧      | 13611154328                         |
++-----------+-------------------------------------+</code></pre>
+<p><strong>step1</strong> 制造序列表(此处通过拼凑序列表)</p>
+<pre><code class="language-sql">select 1 id union select 2 id union select 3 id;</code></pre>
+<pre><code>+----+
+| id |
++----+
+|  1 |
+|  2 |
+|  3 |
++----+</code></pre>
+<p><strong><mark>注意</mark></strong> 序列表大小有<code>phones</code>逗号分隔最多电话数觉得.</p>
+<p><strong>step2</strong> 使用序列表实现多行</p>
+<pre><code class="language-sql">SELECT name, phones, num.id
+FROM users a
+    CROSS JOIN (
+        SELECT 1 AS id
+        UNION
+        SELECT 2 AS id
+        UNION
+        SELECT 3 AS id
+    ) num ON num.id &lt;= length(`phones`) - length(replace(phones, ',', '')) + 1</code></pre>
+<pre><code>+-----------+-------------------------------------+----+
+| name      | phones                              | id |
++-----------+-------------------------------------+----+
+| 唐僧      | 13611154325,13322876547,17654356788 |  1 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  2 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  3 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  1 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  2 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  3 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  1 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  2 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  3 |
+| 沙僧      | 13611154328                         |  1 |
++-----------+-------------------------------------+----+</code></pre>
+<p><strong>step3</strong> 字符串截取</p>
+<p><mark>注意</mark> sql中的函数需要掌握 </p>
+<p><code>substring_index(str, delim, count)</code></p>
+<p><code>char_length(str)</code></p>
+<p><code>substring(str, start_pos, length)</code></p>
+<p><code>replace(str, need, des)</code></p>
+<pre><code class="language-sql">SELECT name, phones, num.id, replace(substring(substring_index(phones, ',', num.id), char_length(substring_index(phones, ',', num.id - 1)) + 1), ',', '') AS phone
+FROM users a
+    CROSS JOIN (
+        SELECT 1 AS id
+        UNION
+        SELECT 2 AS id
+        UNION
+        SELECT 3 AS id
+    ) num ON num.id &lt;= length(`phones`) - length(replace(phones, ',', '')) + 1</code></pre>
+<pre><code>+-----------+-------------------------------------+----+-------------+
+| name      | phones                              | id | phone       |
++-----------+-------------------------------------+----+-------------+
+| 唐僧      | 13611154325,13322876547,17654356788 |  1 | 13611154325 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  2 | 13322876547 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  3 | 17654356788 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  1 | 13611154326 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  2 | 13322876548 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  3 | 17654356789 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  1 | 13611154327 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  2 | 13322876549 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  3 | 17654356780 |
+| 沙僧      | 13611154328                         |  1 | 13611154328 |
++-----------+-------------------------------------+----+-------------+</code></pre>
+<h4><strong>列转行二</strong></h4>
+<pre><code class="language-sql">SELECT name, shoes, cloth, arms
+FROM users a
+    JOIN user_equipment b ON a.id = b.user_id</code></pre>
+<pre><code>+-----------+-----------+--------+--------+
+| name      | shoes     | cloth  | arms   |
++-----------+-----------+--------+--------+
+| 唐僧       | 布鞋      | 西装   | 锤子   |
+| 孙悟空     | 皮鞋      | 衬衫   | 棒槌   |
+| 猪八戒     | 溜冰鞋     | 夹克   | 榔头   |
+| 沙僧       | 无鞋      | 裸奔   | 空手   |
++-----------+-----------+--------+--------+</code></pre>
+<pre><code class="language-sql">SELECT b.name, CASE WHEN c.id = 1 THEN 'arms' WHEN c.id = 2 THEN 'cloth' WHEN c.id = 3 THEN 'shoes' END AS equipment, coalesce(CASE WHEN c.id = 1 THEN arms END, CASE WHEN c.id = 2 THEN cloth END, CASE WHEN c.id = 3 THEN shoes END) AS qp_name
+FROM `user_equipment` a
+    LEFT JOIN users b ON b.id = a.user_id
+    CROSS JOIN (
+        SELECT 1 AS id
+        UNION
+        SELECT 2 AS id
+        UNION
+        SELECT 3 AS id
+    ) c</code></pre>
+<pre><code>+-----------+-----------+-----------+
+| name      | equipment | qp_name   |
++-----------+-----------+-----------+
+| 唐僧      | arms      | 锤子      |
+| 唐僧      | cloth     | 西装      |
+| 唐僧      | shoes     | 布鞋      |
+| 孙悟空    | arms      | 棒槌      |
+| 孙悟空    | cloth     | 衬衫      |
+| 孙悟空    | shoes     | 皮鞋      |
+| 猪八戒    | arms      | 榔头      |
+| 猪八戒    | cloth     | 夹克      |
+| 猪八戒    | shoes     | 溜冰鞋    |
+| 沙僧      | arms      | 空手      |
+| 沙僧      | cloth     | 裸奔      |
+| 沙僧      | shoes     | 无鞋      |
++-----------+-----------+-----------+</code></pre>
+<h2><a name='skill-four'></a>技巧四 <a href="#top"><em>top</em></a></h2>
+<p><strong>存储过程</strong> 生成唯一序列号</p>
+<pre><code class="language-sql">DELIMITER //
+CREATE PROCEDURE gen_num()
+begin
+DECLARE v_cnt INT;
+DECLARE v_timestr INT;
+DECLARE rowcount BIGINT;
+SET v_timestr = DATE_FORMAT(NOW(),'%Y%m%d');
+SELECT ROUND(RAND()*100,0)+1 INTO v_cnt;
+START TRANSACTION;
+UPDATE order_seq SET order_sn = order_sn + v_cnt WHERE timestr = v_timestr;
+IF ROW_COUNT() = 0 THEN
+   INSERT INTO order_seq(timestr,order_sn) VALUES(v_timestr,v_cnt);
+END IF;
+SELECT CONCAT(v_timestr,LPAD(order_sn,7,0))AS order_sn
+   FROM order_seq WHERE timestr = v_timestr;
+COMMIT;
+end
+//</code></pre>
 					</p>
 				</div>
 				<div class="meta">

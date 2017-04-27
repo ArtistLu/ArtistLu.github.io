@@ -4,8 +4,8 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-27 03:04:35</pubDate>
-        <lastBuildDate>2017-04-27 03:04:35</lastBuildDate>
+        <pubDate>2017-04-27 09:04:29</pubDate>
+        <lastBuildDate>2017-04-27 09:04:29</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
@@ -27,6 +27,8 @@ summary:在开发过程中，经常会遇到mysql处理一些数据，在此介�
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;#skill-one&quot;&gt;&lt;strong&gt;技巧一&lt;/strong&gt; &lt;mark&gt;取每个用户最大记录&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#skill-two&quot;&gt;&lt;strong&gt;技巧二&lt;/strong&gt; &lt;mark&gt;取每个用户前n条记录&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#skill-three&quot;&gt;&lt;strong&gt;技巧三&lt;/strong&gt; &lt;mark&gt;行列转换&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#skill-four&quot;&gt;&lt;strong&gt;技巧四&lt;/strong&gt; &lt;mark&gt;生成唯一序列号&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;&lt;a name='skill-one'&gt;&lt;/a&gt;技巧一 &lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;要求：&lt;/strong&gt;有用户表&lt;code&gt;users&lt;/code&gt;和用户打怪表 &lt;code&gt;user_kill&lt;/code&gt;如下， 查出所有用户对于某天打怪最多记录数.&lt;/p&gt;
@@ -233,8 +235,140 @@ ORDER BY name&lt;/code&gt;&lt;/pre&gt;
 | 猪八戒    | 2017-04-24 00:00:00 |     6 |    1 |
 | 猪八戒    | 2017-04-22 00:00:00 |     6 |    1 |
 +-----------+---------------------+-------+------+&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;mark&gt;&lt;/strong&gt; 如果打怪数有重复，此查询有一定缺陷.&lt;/p&gt;            </description>
-            <pubDate>2017-04-27 03:24:13</pubDate>
+&lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;mark&gt;&lt;/strong&gt; 如果打怪数有重复，此查询有一定缺陷.&lt;/p&gt;
+&lt;h2&gt;&lt;a name='skill-three'&gt;&lt;/a&gt;技巧三 &lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h2&gt;
+&lt;h4&gt;&lt;strong&gt;列转行一&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;有如下表，&lt;code&gt;phones&lt;/code&gt;字段以逗号转为多行.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+-------------------------------------+
+| name      | phones                              |
++-----------+-------------------------------------+
+| 唐僧      | 13611154325,13322876547,17654356788 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |
+| 沙僧      | 13611154328                         |
++-----------+-------------------------------------+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;step1&lt;/strong&gt; 制造序列表(此处通过拼凑序列表)&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;select 1 id union select 2 id union select 3 id;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+----+
+| id |
++----+
+|  1 |
+|  2 |
+|  3 |
++----+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;/mark&gt;&lt;/strong&gt; 序列表大小有&lt;code&gt;phones&lt;/code&gt;逗号分隔最多电话数觉得.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;step2&lt;/strong&gt; 使用序列表实现多行&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, phones, num.id
+FROM users a
+    CROSS JOIN (
+        SELECT 1 AS id
+        UNION
+        SELECT 2 AS id
+        UNION
+        SELECT 3 AS id
+    ) num ON num.id &amp;lt;= length(`phones`) - length(replace(phones, ',', '')) + 1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+-------------------------------------+----+
+| name      | phones                              | id |
++-----------+-------------------------------------+----+
+| 唐僧      | 13611154325,13322876547,17654356788 |  1 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  2 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  3 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  1 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  2 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  3 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  1 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  2 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  3 |
+| 沙僧      | 13611154328                         |  1 |
++-----------+-------------------------------------+----+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;step3&lt;/strong&gt; 字符串截取&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;注意&lt;/mark&gt; sql中的函数需要掌握 &lt;/p&gt;
+&lt;p&gt;&lt;code&gt;substring_index(str, delim, count)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;char_length(str)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;substring(str, start_pos, length)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;replace(str, need, des)&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, phones, num.id, replace(substring(substring_index(phones, ',', num.id), char_length(substring_index(phones, ',', num.id - 1)) + 1), ',', '') AS phone
+FROM users a
+    CROSS JOIN (
+        SELECT 1 AS id
+        UNION
+        SELECT 2 AS id
+        UNION
+        SELECT 3 AS id
+    ) num ON num.id &amp;lt;= length(`phones`) - length(replace(phones, ',', '')) + 1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+-------------------------------------+----+-------------+
+| name      | phones                              | id | phone       |
++-----------+-------------------------------------+----+-------------+
+| 唐僧      | 13611154325,13322876547,17654356788 |  1 | 13611154325 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  2 | 13322876547 |
+| 唐僧      | 13611154325,13322876547,17654356788 |  3 | 17654356788 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  1 | 13611154326 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  2 | 13322876548 |
+| 孙悟空    | 13611154326,13322876548,17654356789 |  3 | 17654356789 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  1 | 13611154327 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  2 | 13322876549 |
+| 猪八戒    | 13611154327,13322876549,17654356780 |  3 | 17654356780 |
+| 沙僧      | 13611154328                         |  1 | 13611154328 |
++-----------+-------------------------------------+----+-------------+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;&lt;strong&gt;列转行二&lt;/strong&gt;&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT name, shoes, cloth, arms
+FROM users a
+    JOIN user_equipment b ON a.id = b.user_id&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+-----------+--------+--------+
+| name      | shoes     | cloth  | arms   |
++-----------+-----------+--------+--------+
+| 唐僧       | 布鞋      | 西装   | 锤子   |
+| 孙悟空     | 皮鞋      | 衬衫   | 棒槌   |
+| 猪八戒     | 溜冰鞋     | 夹克   | 榔头   |
+| 沙僧       | 无鞋      | 裸奔   | 空手   |
++-----------+-----------+--------+--------+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT b.name, CASE WHEN c.id = 1 THEN 'arms' WHEN c.id = 2 THEN 'cloth' WHEN c.id = 3 THEN 'shoes' END AS equipment, coalesce(CASE WHEN c.id = 1 THEN arms END, CASE WHEN c.id = 2 THEN cloth END, CASE WHEN c.id = 3 THEN shoes END) AS qp_name
+FROM `user_equipment` a
+    LEFT JOIN users b ON b.id = a.user_id
+    CROSS JOIN (
+        SELECT 1 AS id
+        UNION
+        SELECT 2 AS id
+        UNION
+        SELECT 3 AS id
+    ) c&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;+-----------+-----------+-----------+
+| name      | equipment | qp_name   |
++-----------+-----------+-----------+
+| 唐僧      | arms      | 锤子      |
+| 唐僧      | cloth     | 西装      |
+| 唐僧      | shoes     | 布鞋      |
+| 孙悟空    | arms      | 棒槌      |
+| 孙悟空    | cloth     | 衬衫      |
+| 孙悟空    | shoes     | 皮鞋      |
+| 猪八戒    | arms      | 榔头      |
+| 猪八戒    | cloth     | 夹克      |
+| 猪八戒    | shoes     | 溜冰鞋    |
+| 沙僧      | arms      | 空手      |
+| 沙僧      | cloth     | 裸奔      |
+| 沙僧      | shoes     | 无鞋      |
++-----------+-----------+-----------+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;&lt;a name='skill-four'&gt;&lt;/a&gt;技巧四 &lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;存储过程&lt;/strong&gt; 生成唯一序列号&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;DELIMITER //
+CREATE PROCEDURE gen_num()
+begin
+DECLARE v_cnt INT;
+DECLARE v_timestr INT;
+DECLARE rowcount BIGINT;
+SET v_timestr = DATE_FORMAT(NOW(),'%Y%m%d');
+SELECT ROUND(RAND()*100,0)+1 INTO v_cnt;
+START TRANSACTION;
+UPDATE order_seq SET order_sn = order_sn + v_cnt WHERE timestr = v_timestr;
+IF ROW_COUNT() = 0 THEN
+   INSERT INTO order_seq(timestr,order_sn) VALUES(v_timestr,v_cnt);
+END IF;
+SELECT CONCAT(v_timestr,LPAD(order_sn,7,0))AS order_sn
+   FROM order_seq WHERE timestr = v_timestr;
+COMMIT;
+end
+//&lt;/code&gt;&lt;/pre&gt;            </description>
+            <pubDate>2017-04-27 09:20:17</pubDate>
             <link>//blog/mysql001.html</link>
             <guid isPermaLink="true">//blog/mysql001.html</guid>
                                                <category>GitBlog</category>
