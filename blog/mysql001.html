@@ -41,6 +41,10 @@ summary:在开发过程中，经常会遇到mysql处理一些数据，在此介�
 <li><a href="#skill-two"><strong>技巧二</strong> <mark>取每个用户前n条记录</mark></a></li>
 <li><a href="#skill-three"><strong>技巧三</strong> <mark>行列转换</mark></a></li>
 <li><a href="#skill-four"><strong>技巧四</strong> <mark>生成唯一序列号</mark></a></li>
+<li><a href="#skill-five"><strong>技巧五</strong> <mark>去重</mark></a></li>
+<li><a href="#skill-six"><strong>技巧六</strong> <mark>同一字段多次过滤</mark></a></li>
+<li><a href="#skill-seven"><strong>技巧七</strong> <mark>税后工资</mark></a></li>
+<li><a href="#sql"><strong>sql文件</strong> <mark>所有用到数据文件</mark></a></li>
 </ul>
 <h2><a name='skill-one'></a>技巧一 <a href="#top"><em>top</em></a></h2>
 <p><strong>要求：</strong>有用户表<code>users</code>和用户打怪表 <code>user_kill</code>如下， 查出所有用户对于某天打怪最多记录数.</p>
@@ -380,6 +384,177 @@ SELECT CONCAT(v_timestr,LPAD(order_sn,7,0))AS order_sn
 COMMIT;
 end
 //</code></pre>
+<h2><a name='skill-five'></a>技巧五 <a href="#top"><em>top</em></a></h2>
+<p><strong>step1</strong> 建立测试表+测试数据</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS `users_test`;
+
+CREATE TABLE `users_test` (
+    `id` int(11) NOT NULL AUTO_INCREMENT, 
+    `name` varchar(3) DEFAULT NULL, 
+    `over` varchar(5) DEFAULT NULL, 
+    `phones` varchar(100) DEFAULT NULL, 
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB CHARSET = utf8;
+
+INSERT INTO `users_test` (`id`, `name`, `over`, `phones`)
+VALUES 
+    (1, '唐僧', '转世灵童', '13611154325,13322876547,17654356788'),
+    (2, '孙悟空', '齐天大圣', '13611154326,13322876548,17654356789'),
+    (3, '猪八戒', '天蓬元帅', '13611154327,13322876549,17654356780'),
+    (4, '沙僧', '卷帘大将', '13611154328'),
+    (8, '唐僧', '转世灵童', '13611154325,13322876547,17654356788'),
+    (9, '孙悟空', '齐天大圣', '13611154326,13322876548,17654356789');</code></pre>
+<pre><code>+----+-----------+--------------+-------------------------------------+
+| id | name      | over         | phones                              |
++----+-----------+--------------+-------------------------------------+
+|  1 | 唐僧      | 转世灵童     | 13611154325,13322876547,17654356788 |
+|  2 | 孙悟空    | 齐天大圣     | 13611154326,13322876548,17654356789 |
+|  3 | 猪八戒    | 天蓬元帅     | 13611154327,13322876549,17654356780 |
+|  4 | 沙僧      | 卷帘大将     | 13611154328                         |
+|  8 | 唐僧      | 转世灵童     | 13611154325,13322876547,17654356788 |
+|  9 | 孙悟空    | 齐天大圣     | 13611154326,13322876548,17654356789 |
++----+-----------+--------------+-------------------------------------+</code></pre>
+<p><strong>step2</strong> 删除重复数据，保留重复数据中id大的.</p>
+<pre><code class="language-sql">DELETE a
+FROM users_test a
+    JOIN (SELECT name, COUNT(*), MAX(id) AS id
+        FROM users_test
+        GROUP BY name
+        HAVING COUNT(*) &gt; 1
+        ) b ON a.name = b.name
+WHERE a.id &lt; b.id</code></pre>
+<pre><code>+----+-----------+--------------+-------------------------------------+
+| id | name      | over         | phones                              |
++----+-----------+--------------+-------------------------------------+
+|  3 | 猪八戒    | 天蓬元帅     | 13611154327,13322876549,17654356780 |
+|  4 | 沙僧      | 卷帘大将     | 13611154328                         |
+|  8 | 唐僧      | 转世灵童     | 13611154325,13322876547,17654356788 |
+|  9 | 孙悟空    | 齐天大圣     | 13611154326,13322876548,17654356789 |
++----+-----------+--------------+-------------------------------------+</code></pre>
+<h2><a name='skill-six'></a>技巧六 <a href="#top"><em>top</em></a></h2>
+<p><strong>step1</strong> 有如下表,找出既能念经又能变化的用户，skill_level=0表示不具有该技能.</p>
+<pre><code class="language-sql">SELECT name, skill, skill_level
+FROM users a
+    JOIN user_skill b ON a.id = b.user_id;</code></pre>
+<pre><code>+-----------+-----------+-------------+
+| name      | skill     | skill_level |
++-----------+-----------+-------------+
+| 唐僧      | 紧箍咒    |           5 |
+| 唐僧      | 打坐      |           4 |
+| 唐僧      | 念经      |           5 |
+| 唐僧      | 变化      |           0 |
+| 孙悟空    | 变化      |           5 |
+| 孙悟空    | 腾云      |           5 |
+| 孙悟空    | 浮水      |           3 |
+| 孙悟空    | 念经      |           2 |
+| 孙悟空    | 请神      |           5 |
+| 孙悟空    | 紧箍咒    |           0 |
+| 猪八戒    | 变化      |           4 |
+| 猪八戒    | 腾云      |           3 |
+| 猪八戒    | 浮水      |           5 |
+| 猪八戒    | 念经      |           0 |
+| 猪八戒    | 紧箍咒    |           0 |
+| 沙僧      | 变化      |           2 |
+| 沙僧      | 腾云      |           2 |
+| 沙僧      | 浮水      |           4 |
+| 沙僧      | 念经      |           1 |
+| 沙僧      | 紧箍咒    |           0 |
++-----------+-----------+-------------+</code></pre>
+<p><strong>step2</strong></p>
+<pre><code class="language-sql">SELECT a.name, b.skill, b.skill_level, c.skill, c.skill_level
+FROM users a
+    JOIN user_skill b ON a.id = b.user_id
+        AND skill = '念经'
+    JOIN user_skill c ON b.user_id = c.user_id
+        AND c.skill = '变化'
+WHERE b.skill_level &gt; 0
+    AND c.skill_level &gt; 0</code></pre>
+<pre><code>+-----------+--------+-------------+--------+-------------+
+| name      | skill  | skill_level | skill  | skill_level |
++-----------+--------+-------------+--------+-------------+
+| 孙悟空    | 念经   |           2 | 变化   |           5 |
+| 沙僧      | 念经   |           1 | 变化   |           2 |
++-----------+--------+-------------+--------+-------------+</code></pre>
+<p><strong>step3</strong> 拓展-念经，腾云，变化，浮水具有其中任意两技能用户</p>
+<pre><code class="language-sql">SELECT a.name, b.`skill`, c.skill, d.skill, e.skill
+FROM users a
+    LEFT JOIN user_skill b ON a.id = b.user_id
+        AND b.skill = '念经'
+        AND b.skill_level &gt; 0
+    LEFT JOIN user_skill c ON a.id = c.user_id
+        AND c.skill = '浮水'
+        AND c.skill_level &gt; 0
+    LEFT JOIN user_skill d ON a.id = d.user_id
+        AND d.skill = '腾云'
+        AND d.skill_level &gt; 0
+    LEFT JOIN user_skill e ON a.id = e.user_id
+        AND e.skill = '变化'
+        AND e.skill_level &gt; 0
+WHERE CASE WHEN b.skill IS NULL THEN 0 ELSE 1 END + CASE WHEN c.skill IS NULL THEN 0 ELSE 1 END + CASE WHEN d.skill IS NULL THEN 0 ELSE 1 END + CASE WHEN e.skill IS NULL THEN 0 ELSE 1 END &gt;= 2</code></pre>
+<pre><code>+-----------+--------+--------+--------+--------+
+| name      | skill  | skill  | skill  | skill  |
++-----------+--------+--------+--------+--------+
+| 孙悟空    | 念经   | 浮水   | 腾云   | 变化   |
+| 沙僧      | 念经   | 浮水   | 腾云   | 变化   |
+| 猪八戒    | NULL   | 浮水   | 腾云   | 变化   |
++-----------+--------+--------+--------+--------+</code></pre>
+<p><strong>step4</strong> <code>step3</code>的另外一种实现</p>
+<pre><code class="language-sql">SELECT a.name
+FROM users a
+    JOIN user_skill b ON a.id = b.user_id
+        AND b.skill_level &gt; 0
+        AND b.skill IN ('变化', '念经', '腾云', '浮水')
+GROUP BY a.name
+HAVING COUNT(*) &gt;= 2</code></pre>
+<pre><code>+-----------+
+| name      |
++-----------+
+| 孙悟空    |
+| 沙僧      |
+| 猪八戒    |
++-----------+</code></pre>
+<h2><a name='skill-seven'></a>技巧七 <a href="#top"><em>top</em></a></h2>
+<p><strong>step</strong> 如下表<code>users</code>用户工资表, 不同段工资税率表<code>rate</code></p>
+<pre><code class="language-sql">SELECT name, salary
+FROM users;</code></pre>
+<pre><code>+-----------+--------+
+| name      | salary |
++-----------+--------+
+| 唐僧      |  54000 |
+| 孙悟空    |  30000 |
+| 猪八戒    |  15000 |
+| 沙僧      |   8000 |
++-----------+--------+</code></pre>
+<pre><code class="language-sql">select * from rate;</code></pre>
+<pre><code>+----+-------+-----------+------+
+| id | low   | up        | rate |
++----+-------+-----------+------+
+|  1 |     0 |      1500 | 0.03 |
+| 20 |  1500 |      4500 |  0.1 |
+| 21 |  4500 |      9000 |  0.2 |
+| 22 |  9000 |     35000 | 0.25 |
+| 23 | 35000 |     55000 |  0.3 |
+| 24 | 55000 |     80000 | 0.35 |
+| 25 | 80000 | 999999999 | 0.45 |
++----+-------+-----------+------+</code></pre>
+<p><strong>step2</strong> 税后工资</p>
+<pre><code class="language-sql">SELECT a.name, a.salary, salary-sum(least(salary-low, up-low) * rate) AS getsalary
+FROM users a
+    LEFT JOIN rate b ON a.salary &gt; b.low
+GROUP BY name, salary</code></pre>
+<pre><code>+-----------+--------+-----------+
+| name      | salary | getsalary |
++-----------+--------+-----------+
+| 唐僧      |  54000 |     40555 |
+| 孙悟空    |  30000 |     23505 |
+| 沙僧      |   8000 |      6955 |
+| 猪八戒    |  15000 |     12255 |
++-----------+--------+-----------+</code></pre>
+<p><strong><mark>注意</mark></strong> 了解sql函数<code>least(num1, num2)</code></p>
+<h3>结束语：<a href="#top"><em>top</em></a></h3>
+<p>我是网络搬用工，一切来源于网络，希望对一些人有帮助就是我最大的收获！！！</p>
+<h2><a name='sql'></a></h2>
+<p><strong>用到的数据</strong> <a href="https://github.com/ArtistLu/notes/blob/master/gitblog/gitblog-mysql001.sql">https://github.com/ArtistLu/notes/blob/master/gitblog/gitblog-mysql001.sql</a> </p>
 					</p>
 				</div>
 				<div class="meta">
