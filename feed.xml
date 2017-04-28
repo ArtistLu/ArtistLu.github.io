@@ -4,8 +4,8 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-28 02:04:10</pubDate>
-        <lastBuildDate>2017-04-28 02:04:10</lastBuildDate>
+        <pubDate>2017-04-28 02:04:35</pubDate>
+        <lastBuildDate>2017-04-28 02:04:35</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
@@ -23,6 +23,8 @@ summary:在开发过程中，经常会遇到mysql处理一些数据，在此介�
 --&gt;
 &lt;h1&gt;mysql开发技巧&lt;/h1&gt;
 &lt;p&gt;通过&lt;code&gt;imooc&lt;/code&gt;视频学习笔记整理如下：&lt;/p&gt;
+&lt;h2&gt;&lt;a name='sql'&gt;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;用到的数据&lt;/strong&gt;&lt;a href=&quot;https://github.com/ArtistLu/notes/blob/master/gitblog/sql/gitblog-mysql001.sql&quot;&gt;study.sql&lt;/a&gt; &lt;/p&gt;
 &lt;h2&gt;&lt;a name='top'&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;#skill-one&quot;&gt;&lt;strong&gt;技巧一&lt;/strong&gt; &lt;mark&gt;取每个用户最大记录&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
@@ -32,7 +34,6 @@ summary:在开发过程中，经常会遇到mysql处理一些数据，在此介�
 &lt;li&gt;&lt;a href=&quot;#skill-five&quot;&gt;&lt;strong&gt;技巧五&lt;/strong&gt; &lt;mark&gt;去重&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#skill-six&quot;&gt;&lt;strong&gt;技巧六&lt;/strong&gt; &lt;mark&gt;同一字段多次过滤&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#skill-seven&quot;&gt;&lt;strong&gt;技巧七&lt;/strong&gt; &lt;mark&gt;税后工资&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#sql&quot;&gt;&lt;strong&gt;sql文件&lt;/strong&gt; &lt;mark&gt;所有用到数据文件&lt;/mark&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;&lt;a name='skill-one'&gt;&lt;/a&gt;技巧一 &lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;要求：&lt;/strong&gt;有用户表&lt;code&gt;users&lt;/code&gt;和用户打怪表 &lt;code&gt;user_kill&lt;/code&gt;如下， 查出所有用户对于某天打怪最多记录数.&lt;/p&gt;
@@ -540,10 +541,8 @@ GROUP BY name, salary&lt;/code&gt;&lt;/pre&gt;
 +-----------+--------+-----------+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;/mark&gt;&lt;/strong&gt; 了解sql函数&lt;code&gt;least(num1, num2)&lt;/code&gt;&lt;/p&gt;
 &lt;h3&gt;结束语：&lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;我是网络搬用工，一切来源于网络，希望对一些人有帮助就是我最大的收获！！！&lt;/p&gt;
-&lt;h2&gt;&lt;a name='sql'&gt;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;用到的数据&lt;/strong&gt; &lt;a href=&quot;https://github.com/ArtistLu/notes/blob/master/gitblog/gitblog-mysql001.sql&quot;&gt;https://github.com/ArtistLu/notes/blob/master/gitblog/gitblog-mysql001.sql&lt;/a&gt; &lt;/p&gt;            </description>
-            <pubDate>2017-04-28 02:13:51</pubDate>
+&lt;p&gt;我是网络搬用工，一切来源于网络，希望对一些人有帮助就是我最大的收获！！！&lt;/p&gt;            </description>
+            <pubDate>2017-04-28 02:24:35</pubDate>
             <link>//blog/mysql001.html</link>
             <guid isPermaLink="true">//blog/mysql001.html</guid>
                                                <category>GitBlog</category>
