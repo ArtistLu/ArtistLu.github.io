@@ -4,14 +4,14 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-28 02:04:35</pubDate>
-        <lastBuildDate>2017-04-28 02:04:35</lastBuildDate>
+        <pubDate>2017-04-28 02:04:01</pubDate>
+        <lastBuildDate>2017-04-28 02:04:01</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>mysql开发技巧</title>
             <description>
             &lt;!--
-author: zhanglu
+author: ArtistLu
 head: /blog/img/mysql001.png
 date: 2017-04-26
 title: mysql开发技巧
@@ -542,7 +542,7 @@ GROUP BY name, salary&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;&lt;mark&gt;注意&lt;/mark&gt;&lt;/strong&gt; 了解sql函数&lt;code&gt;least(num1, num2)&lt;/code&gt;&lt;/p&gt;
 &lt;h3&gt;结束语：&lt;a href=&quot;#top&quot;&gt;&lt;em&gt;top&lt;/em&gt;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;我是网络搬用工，一切来源于网络，希望对一些人有帮助就是我最大的收获！！！&lt;/p&gt;            </description>
-            <pubDate>2017-04-28 02:24:35</pubDate>
+            <pubDate>2017-04-28 02:37:10</pubDate>
             <link>//blog/mysql001.html</link>
             <guid isPermaLink="true">//blog/mysql001.html</guid>
                                                <category>GitBlog</category>
