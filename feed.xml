@@ -4,9 +4,31 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-04-28 02:04:01</pubDate>
-        <lastBuildDate>2017-04-28 02:04:01</lastBuildDate>
+        <pubDate>2017-05-26 02:05:02</pubDate>
+        <lastBuildDate>2017-05-26 02:05:02</lastBuildDate>
         <generator>Gitblog v1.0</generator>
+                <item>
+            <title>mysql开发遇到问题</title>
+            <description>
+            &lt;!--
+author: ArtistLu
+head: /blog/img/mysql002.png
+date: 2017-05-26
+title: mysql开发遇到问题
+tags: mysql
+images: /blog/img/mysql002.png
+category: GitBlog
+status: publish
+summary:在开发中遇到的真实场景。
+--&gt;
+&lt;h3&gt;myq-连表更新数据&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;场景：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;机构表中有一创建时间字段， 机构日志表中有机构登陆记录。由于各种原因吧，出现了日志表中登陆时间小于该机构的创建时间。于是为了符合逻辑我们要将机构表中的创建时间改为日志表中该机构最小登陆时间或改为小于最早登陆时间&lt;/p&gt;            </description>
+            <pubDate>2017-05-26 02:48:42</pubDate>
+            <link>//blog/mysql002.html</link>
+            <guid isPermaLink="true">//blog/mysql002.html</guid>
+                                               <category>GitBlog</category>
+                                    </item>
                 <item>
             <title>mysql开发技巧</title>
             <description>
