@@ -4,8 +4,8 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-07-13 02:07:53</pubDate>
-        <lastBuildDate>2017-07-13 02:07:53</lastBuildDate>
+        <pubDate>2017-07-13 03:07:35</pubDate>
+        <lastBuildDate>2017-07-13 03:07:35</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>git命令</title>
@@ -21,8 +21,51 @@ category: GitBlog
 status: publish
 summary:git常用命令。
 --&gt;
-&lt;h1&gt;git常用命令&lt;/h1&gt;            </description>
-            <pubDate>2017-07-13 02:02:51</pubDate>
+&lt;h1&gt;git常用命令&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;创建版本库&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt;git init&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;添加文件到版本库&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt;git add fileName //添加到暂存区
+git commit -m '注释' //添加到分支&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;版本回退&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt;git log //查看提交日志
+git log --pretty=oneline //一行一行显示
+
+git reset --hard HEAD^ //回退到上一个版本
+git reset --hard HEAD^^ //回退到上上一个版本
+git reset --hard HEAD~100 //回退到前100个版本
+git reset --hard 3628164 //回到某一版本 通过版本号
+
+注意：git reflog 查看使用命令日志&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;工作区&amp;amp;暂存区&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;工作区：电脑里能看到的目录&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;版本库：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt;git add fileName //添加到暂存区
+git commit -m '注释' //把暂存区的所有内容提交到当前分支&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;需要提交的文件修改通通放到暂存区，然后，一次性提交暂存区的所有修改。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;管理修改&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git status //查看状态
+git diff HEAD -- fileName //查看工作区和版本库最新版本的区别&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;撤销修改&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;丢弃工作区的修改&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;git checkout -- fileName //工作区恢复到暂存区的样子，暂存区没有，直接恢复到分支样子&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;回退暂存区修改&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;git reset HEAD fileName&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;删除文件&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git rm fileName
+git commit -m '注释'&lt;/code&gt;&lt;/pre&gt;            </description>
+            <pubDate>2017-07-13 03:06:32</pubDate>
             <link>//blog/git001.html</link>
             <guid isPermaLink="true">//blog/git001.html</guid>
                                                <category>GitBlog</category>

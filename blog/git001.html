@@ -34,6 +34,49 @@ status: publish
 summary:git常用命令。
 -->
 <h1>git常用命令</h1>
+<p><strong>创建版本库</strong></p>
+<pre><code class="language-git">git init</code></pre>
+<p><strong>添加文件到版本库</strong></p>
+<pre><code class="language-git">git add fileName //添加到暂存区
+git commit -m '注释' //添加到分支</code></pre>
+<p><strong>版本回退</strong></p>
+<pre><code class="language-git">git log //查看提交日志
+git log --pretty=oneline //一行一行显示
+
+git reset --hard HEAD^ //回退到上一个版本
+git reset --hard HEAD^^ //回退到上上一个版本
+git reset --hard HEAD~100 //回退到前100个版本
+git reset --hard 3628164 //回到某一版本 通过版本号
+
+注意：git reflog 查看使用命令日志</code></pre>
+<p><strong>工作区&amp;暂存区</strong></p>
+<ul>
+<li>工作区：电脑里能看到的目录</li>
+<li>
+<p>版本库：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。</p>
+</li>
+<li>版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。</li>
+</ul>
+<pre><code class="language-git">git add fileName //添加到暂存区
+git commit -m '注释' //把暂存区的所有内容提交到当前分支</code></pre>
+<ul>
+<li>需要提交的文件修改通通放到暂存区，然后，一次性提交暂存区的所有修改。</li>
+</ul>
+<p><strong>管理修改</strong></p>
+<pre><code>git status //查看状态
+git diff HEAD -- fileName //查看工作区和版本库最新版本的区别</code></pre>
+<p><strong>撤销修改</strong></p>
+<ul>
+<li>丢弃工作区的修改</li>
+</ul>
+<pre><code>git checkout -- fileName //工作区恢复到暂存区的样子，暂存区没有，直接恢复到分支样子</code></pre>
+<ul>
+<li>回退暂存区修改</li>
+</ul>
+<pre><code>git reset HEAD fileName</code></pre>
+<p><strong>删除文件</strong></p>
+<pre><code>git rm fileName
+git commit -m '注释'</code></pre>
 					</p>
 				</div>
 				<div class="meta">
