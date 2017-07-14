@@ -4,8 +4,8 @@
         <description>云淡风轻~厚德载物!</description>
         <link>/</link>
         <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
-        <pubDate>2017-07-13 03:07:35</pubDate>
-        <lastBuildDate>2017-07-13 03:07:35</lastBuildDate>
+        <pubDate>2017-07-14 06:07:45</pubDate>
+        <lastBuildDate>2017-07-14 06:07:45</lastBuildDate>
         <generator>Gitblog v1.0</generator>
                 <item>
             <title>git命令</title>
@@ -64,8 +64,135 @@ git diff HEAD -- fileName //查看工作区和版本库最新版本的区别&lt;
 &lt;pre&gt;&lt;code&gt;git reset HEAD fileName&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;删除文件&lt;/strong&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;git rm fileName
-git commit -m '注释'&lt;/code&gt;&lt;/pre&gt;            </description>
-            <pubDate>2017-07-13 03:06:32</pubDate>
+git commit -m '注释'&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;远程仓库&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;SSH Key&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ssh-keygen -t rsa -c &quot;email@qq.com&quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;添加远程仓库&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git remote add origin git@github.com:Artistlu/learngit.git //关联远程库
+
+git push -u origin master //本地推送到远程
+
+git push origin master //第一次后可以这样推送到远程&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;远程克隆&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git clone git@github.com:michaelliao/gitskills.git&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;分支管理&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;创建分支&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git checkout -b dev //创建并切换分支
+
+等效
+git branch dev   //创建分支
+git checkout dev //切换分支
+
+git branch //查看分支
+
+git checkout master //切换分支到master
+
+git merge dev //合并dev到master
+
+git branch -d dev //删除dev分支
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;解决冲突&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git merge branchName //合并分支出现冲突，修改文件提交解决
+
+git merge --no-ff -m '注释' dev //这样合并删除dev分支 git log 还能看到&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Bug分支&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git stash //暂存当前分支工作区
+
+git stash list //查看暂存情况
+
+git stash apply  //恢复工作区
+git stash drop  //删掉工作区暂存
+
+等效：
+git stash pop 恢复同时删除stash
+
+git stash apply stash@{0} //恢复某一个stash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Featuref分支&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git checkout -b feature-xx
+
+git add 
+git commit
+
+git checkout dev
+
+git branch -d feature-xx //没有合并删除分支，会提醒
+
+git branch -D feature-xx //强行删除&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;多人协作&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+git remote  //查看远程库
+
+git rmote -v 
+
+origin  git@github.com:michaelliao/learngit.git (fetch)
+origin  git@github.com:michaelliao/learngit.git (push)
+抓取、推送的 origin地址
+
+git push origin master //推送分支
+
+git push origin dev //错误提示
+
+git branch --set-upstream dev origin/dev //链接远程
+git branch --set-upstream-to=origin/dev //链接远程&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;标签管理&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git tag v1.0 //打标签
+git tag //查看标签
+
+git tag v0.9 6224937 //打标签到具体某一commit
+
+git show v0.9 //查看tag信息
+
+git tag -a v0.1 -m &quot;version 0.1 released&quot; 362816 //-a指定标签 -m指定标签说明
+
+git tag -d v0.1 //删除标签
+
+git push origin v1.0 //推送标签到远程
+git push origin --tags //推送所有未推送的标签
+
+//删除远程标签
+git tag -d v0.9 //先删除本地
+git push origin :refs/tags/v0.9 //push删除到远程&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;配置忽略文件&lt;/strong&gt;
+在工作区新建
+.gitignore文件，并把要忽略的文件写入就可以忽略了
+&lt;a href=&quot;https://github.com/github/gitignore&quot;&gt;&lt;a href=&quot;https://github.com/github/gitignore&quot;&gt;https://github.com/github/gitignore&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;搭建Git服务器&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1.linux下 安装
+$ sudo apt-get install git
+
+2创建git用户
+$ sudo adduser git
+
+3.创建证书登录：
+
+收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+
+4.初始化git仓库
+
+假定是/srv/sample.git，在/srv目录下输入命令：
+
+$ sudo git init --bare sample.git
+
+把owner改为git：
+$ sudo chown -R git:git sample.git
+
+5.禁用shell登录
+出于安全考虑，第二步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
+
+git:x:1001:1001:,,,:/home/git:/bin/bash
+改为：
+
+git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+
+6.克隆远程仓库：
+$ git clone git@server:/srv/sample.git
+Cloning into 'sample'...
+warning: You appear to have cloned an empty repository.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;声明:以上内容来自&lt;a href=&quot;http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000&quot;&gt;廖雪峰官网&lt;/a&gt;&lt;/p&gt;            </description>
+            <pubDate>2017-07-14 06:25:15</pubDate>
             <link>//blog/git001.html</link>
             <guid isPermaLink="true">//blog/git001.html</guid>
                                                <category>GitBlog</category>

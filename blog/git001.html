@@ -77,6 +77,133 @@ git diff HEAD -- fileName //查看工作区和版本库最新版本的区别</co
 <p><strong>删除文件</strong></p>
 <pre><code>git rm fileName
 git commit -m '注释'</code></pre>
+<h3>远程仓库</h3>
+<p><strong>SSH Key</strong></p>
+<pre><code>ssh-keygen -t rsa -c "email@qq.com"</code></pre>
+<p><strong>添加远程仓库</strong></p>
+<pre><code>git remote add origin git@github.com:Artistlu/learngit.git //关联远程库
+
+git push -u origin master //本地推送到远程
+
+git push origin master //第一次后可以这样推送到远程</code></pre>
+<p><strong>远程克隆</strong></p>
+<pre><code>git clone git@github.com:michaelliao/gitskills.git</code></pre>
+<h3>分支管理</h3>
+<p><strong>创建分支</strong></p>
+<pre><code>git checkout -b dev //创建并切换分支
+
+等效
+git branch dev   //创建分支
+git checkout dev //切换分支
+
+git branch //查看分支
+
+git checkout master //切换分支到master
+
+git merge dev //合并dev到master
+
+git branch -d dev //删除dev分支
+</code></pre>
+<p><strong>解决冲突</strong></p>
+<pre><code>git merge branchName //合并分支出现冲突，修改文件提交解决
+
+git merge --no-ff -m '注释' dev //这样合并删除dev分支 git log 还能看到</code></pre>
+<p><strong>Bug分支</strong></p>
+<pre><code>git stash //暂存当前分支工作区
+
+git stash list //查看暂存情况
+
+git stash apply  //恢复工作区
+git stash drop  //删掉工作区暂存
+
+等效：
+git stash pop 恢复同时删除stash
+
+git stash apply stash@{0} //恢复某一个stash
+</code></pre>
+<p><strong>Featuref分支</strong></p>
+<pre><code>git checkout -b feature-xx
+
+git add 
+git commit
+
+git checkout dev
+
+git branch -d feature-xx //没有合并删除分支，会提醒
+
+git branch -D feature-xx //强行删除</code></pre>
+<p><strong>多人协作</strong></p>
+<pre><code>
+git remote  //查看远程库
+
+git rmote -v 
+
+origin  git@github.com:michaelliao/learngit.git (fetch)
+origin  git@github.com:michaelliao/learngit.git (push)
+抓取、推送的 origin地址
+
+git push origin master //推送分支
+
+git push origin dev //错误提示
+
+git branch --set-upstream dev origin/dev //链接远程
+git branch --set-upstream-to=origin/dev //链接远程</code></pre>
+<p><strong>标签管理</strong></p>
+<pre><code>git tag v1.0 //打标签
+git tag //查看标签
+
+git tag v0.9 6224937 //打标签到具体某一commit
+
+git show v0.9 //查看tag信息
+
+git tag -a v0.1 -m "version 0.1 released" 362816 //-a指定标签 -m指定标签说明
+
+git tag -d v0.1 //删除标签
+
+git push origin v1.0 //推送标签到远程
+git push origin --tags //推送所有未推送的标签
+
+//删除远程标签
+git tag -d v0.9 //先删除本地
+git push origin :refs/tags/v0.9 //push删除到远程</code></pre>
+<p><strong>配置忽略文件</strong>
+在工作区新建
+.gitignore文件，并把要忽略的文件写入就可以忽略了
+<a href="https://github.com/github/gitignore"><a href="https://github.com/github/gitignore">https://github.com/github/gitignore</a></a></p>
+<p><strong>搭建Git服务器</strong></p>
+<pre><code>1.linux下 安装
+$ sudo apt-get install git
+
+2创建git用户
+$ sudo adduser git
+
+3.创建证书登录：
+
+收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+
+4.初始化git仓库
+
+假定是/srv/sample.git，在/srv目录下输入命令：
+
+$ sudo git init --bare sample.git
+
+把owner改为git：
+$ sudo chown -R git:git sample.git
+
+5.禁用shell登录
+出于安全考虑，第二步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
+
+git:x:1001:1001:,,,:/home/git:/bin/bash
+改为：
+
+git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+
+6.克隆远程仓库：
+$ git clone git@server:/srv/sample.git
+Cloning into 'sample'...
+warning: You appear to have cloned an empty repository.
+</code></pre>
+<p>声明:以上内容来自<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">廖雪峰官网</a></p>
 					</p>
 				</div>
 				<div class="meta">
